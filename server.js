@@ -23,7 +23,7 @@ if (!TOKEN) {
   process.exit(1);
 }
 
-const STATIC = { '/': 'index.html', '/index.html': 'index.html', '/bg.webp': 'bg.webp', '/sw.js': 'sw.js', '/manifest.webmanifest': 'manifest.webmanifest', '/icon.svg': 'icon.svg', '/icon-192.png': 'icon-192.png', '/icon-512.png': 'icon-512.png', '/ic-trophy.png': 'ic-trophy.png', '/ic-gadget.png': 'ic-gadget.png', '/ic-star.png': 'ic-star.png', '/ic-hyper.png': 'ic-hyper.png', '/ic-coin.png': 'ic-coin.png' };
+const STATIC = { '/': 'index.html', '/index.html': 'index.html', '/bg.webp': 'bg.webp', '/sw.js': 'sw.js', '/config.js': 'config.js', '/manifest.webmanifest': 'manifest.webmanifest', '/icon.svg': 'icon.svg', '/icon-192.png': 'icon-192.png', '/icon-512.png': 'icon-512.png', '/ic-trophy.png': 'ic-trophy.png', '/ic-gadget.png': 'ic-gadget.png', '/ic-star.png': 'ic-star.png', '/ic-hyper.png': 'ic-hyper.png', '/ic-coin.png': 'ic-coin.png' };
 const TYPES = { '.html': 'text/html; charset=utf-8', '.webp': 'image/webp', '.js': 'text/javascript; charset=utf-8', '.webmanifest': 'application/manifest+json', '.svg': 'image/svg+xml', '.png': 'image/png' };
 const cache = new Map();
 const TTL = { player: 30e3, battlelog: 30e3, brawlers: 6 * 3600e3, rankings: 5 * 60e3, club: 2 * 60e3 };

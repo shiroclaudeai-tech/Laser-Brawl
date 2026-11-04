@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b0b12">
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/icon-192.png">
+<script src="config.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Shiro Hub</title>
@@ -22,7 +23,7 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--txt);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 /* fond d'écran */
 html{overflow-x:hidden}
-.bg{position:fixed;inset:-2%;z-index:-1;background:#0b0b12 url(/bg.webp) center 62%/cover no-repeat;animation:kb 45s ease-in-out infinite alternate}
+.bg{position:fixed;inset:-2%;z-index:-1;background:#0b0b12 url(bg.webp) center 62%/cover no-repeat;animation:kb 45s ease-in-out infinite alternate}
 .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,20,.9) 0%,rgba(8,8,20,.5) 22%,rgba(8,8,20,.5) 55%,rgba(8,8,20,.86) 100%)}
 @keyframes kb{to{transform:scale(1.07) translate3d(0,-1.2%,0)}}
 @media (prefers-reduced-motion:reduce){.bg{animation:none}*{transition:none!important}}
@@ -253,7 +254,7 @@ const CDN = 'https://cdn.brawlify.com';
 const brIcon = id => `${CDN}/brawlers/borders/${id}.png`;
 const pfIcon = id => `${CDN}/profile-icons/regular/${id}.png`;
 const FALLBACK = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><rect width='10' height='10' fill='%23262633'/><text x='5' y='7' font-size='6' text-anchor='middle' fill='%23777'>?</text></svg>";
-const ic = k => `<img class="ic" src="/ic-${k}.png" alt="">`;
+const ic = k => `<img class="ic" src="ic-${k}.png" alt="">`;
 const fb = i => { i.onerror = null; i.src = FALLBACK; };
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const img = (src, cls = '') => `<img class="${cls}" loading="lazy" src="${src}" onerror="fb(this)" alt="">`;
@@ -275,7 +276,7 @@ const COST = { power: 7765, gadget: 1000, star: 2000, hyper: 5000 };
 let player = null, allBrawlers = null, tag = null, battles = null;
 
 async function api(path) {
-  const r = await fetch('/api/' + path);
+  const r = await fetch((window.SHIRO_API ? window.SHIRO_API.replace(/\/$/, '') + '/' : '') + 'api/' + path);
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.message || 'Erreur ' + r.status);
   return j;
@@ -588,7 +589,7 @@ function prestige(t) {
   let i = 3; while (i > 0 && t < PTIERS[i][2]) i--;
   return { key: PTIERS[i][0], n: 0, name: PTIERS[i][1], img: i + 1, floor: PTIERS[i][2], next: i < 3 ? PTIERS[i + 1][2] : 1000, nextName: i < 3 ? PTIERS[i + 1][1] : 'Prestige 1', t };
 }
-const presBadge = (name, p, size) => { const k = mKey(name); return k ? `<span class="pb ${size}" title="${esc(p.name)}"><img loading="lazy" src="/img/mastery/${k}-${p.img}.webp" onerror="this.style.visibility='hidden'" alt="${esc(p.name)}">${p.n > 3 ? `<i>${p.n}</i>` : ''}</span>` : ''; };
+const presBadge = (name, p, size) => { const k = mKey(name); return k ? `<span class="pb ${size}" title="${esc(p.name)}"><img loading="lazy" src="img/mastery/${k}-${p.img}.webp" onerror="this.style.visibility='hidden'" alt="${esc(p.name)}">${p.n > 3 ? `<i>${p.n}</i>` : ''}</span>` : ''; };
 const bestOf = o => Math.max(o.highestTrophies || 0, o.trophies || 0);
 
 function prestigeBlock(o, name) {
@@ -607,7 +608,7 @@ function prestigesCard() {
   const tc = top('cur'), tb = top('best');
   const counts = {}; rows.forEach(r => { const k = r.cur.n >= 4 ? 'p4' : r.cur.key; counts[k] = (counts[k] || 0) + 1; });
   const L = [['wood', 'Wood', '0', 1], ['bronze', 'Bronze', '250', 2], ['silver', 'Silver', '500', 3], ['gold', 'Gold', '750', 4], ['p1', 'Prestige 1', '1 000', 5], ['p2', 'Prestige 2', '2 000', 6], ['p3', 'Prestige 3', '3 000', 7], ['p4', 'Prestige 4+', '+1 000 chacun', 7]];
-  const ladder = L.map(([k, n, th, im]) => `<div class="lad ${counts[k] ? '' : 'zero'}" style="--c:${PCOL[k] || PCOL.p3}"><span class="pb md"><img loading="lazy" src="/img/mastery/shelly-${im}.webp" onerror="this.style.visibility='hidden'" alt="">${k === 'p4' ? '<i>4+</i>' : ''}</span><b>${n}</b><span>${th} ${k === 'p4' ? '' : ic('trophy')}</span><em>× ${counts[k] || 0}</em></div>`).join('');
+  const ladder = L.map(([k, n, th, im]) => `<div class="lad ${counts[k] ? '' : 'zero'}" style="--c:${PCOL[k] || PCOL.p3}"><span class="pb md"><img loading="lazy" src="img/mastery/shelly-${im}.webp" onerror="this.style.visibility='hidden'" alt="">${k === 'p4' ? '<i>4+</i>' : ''}</span><b>${n}</b><span>${th} ${k === 'p4' ? '' : ic('trophy')}</span><em>× ${counts[k] || 0}</em></div>`).join('');
   const tile = (lbl, r, p) => `<div class="pt" style="--c:${PCOL[p.key]}">${presBadge(r.name, p, 'md')}<div><small>${lbl}</small><b>${esc(p.name)}</b><em>${esc(r.name)} · ${nf.format(p.t)} ${ic('trophy')}</em></div></div>`;
   return `<div class="card glass"><h2>Prestiges</h2>
     <div class="pres">${tile('Prestige actuel le plus haut', tc, tc.cur)}${tile('Meilleur prestige atteint', tb, tb.best)}</div>
@@ -645,7 +646,7 @@ function autoRanked() {
 function rankedCard() {
   autoRanked();
   const g = RGEN[rkGen], d = rkLoad(rkGen) || {};
-  const tile = (lbl, v) => v ? `<div class="pt rt" style="--g:${g.col}"><img class="rkimg" src="/img/ranked/${rkGen}-${RK[v.r][0]}.webp" onerror="this.style.visibility='hidden'" alt=""><div><small>${lbl}</small><b>${rkName(v)}</b><em>${g.label}</em></div></div>`
+  const tile = (lbl, v) => v ? `<div class="pt rt" style="--g:${g.col}"><img class="rkimg" src="img/ranked/${rkGen}-${RK[v.r][0]}.webp" onerror="this.style.visibility='hidden'" alt=""><div><small>${lbl}</small><b>${rkName(v)}</b><em>${g.label}</em></div></div>`
     : `<div class="pt rt none" style="--g:${g.col}"><div><small>${lbl}</small><b>Non renseigné</b><em>${g.label}</em></div></div>`;
   const opts = (v, key) => `<label>${key === 'c' ? 'Rang actuel' : 'Meilleur rang'}<span class="pair"><select data-r="${key}"><option value="">— Aucun —</option>${RK.slice(0, g.n).map((x, i) => `<option value="${i}" ${v && v.r === i ? 'selected' : ''}>${x[1]}</option>`).join('')}</select><select data-l="${key}">${[1, 2, 3].map(l => `<option value="${l}" ${v && v.l === l ? 'selected' : ''}>${ROM[l]}</option>`).join('')}</select></span></label>`;
   return `<div class="card glass" id="rkbox"><h2>Rang Ranked <span class="rtag" style="--g:${g.col}">${g.label}</span></h2>
@@ -695,7 +696,7 @@ function openBrawler(id) {
 function closeModal() { $('#modal').classList.remove('on'); document.body.style.overflow = ''; }
 $('#modal').onclick = e => { if (e.target.id === 'modal') closeModal(); };
 addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
 const COUNTRIES = [['global','Monde'],['FR','France'],['BE','Belgique'],['CH','Suisse'],['CA','Canada'],['US','États-Unis'],['GB','Royaume-Uni'],['DE','Allemagne'],['ES','Espagne'],['IT','Italie'],['BR','Brésil'],['JP','Japon'],['KR','Corée du Sud']];
 async function loadRank(c) {
